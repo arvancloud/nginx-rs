@@ -1,0 +1,8 @@
+[package]
+name = "nginx-rs"
+version = "0.1.0"
+authors = ["Navid <yaa110@gmail.com>"]
+license = "MIT/Apache-2.0"
+
+[build-dependencies]
+bindgen = "0.43"
