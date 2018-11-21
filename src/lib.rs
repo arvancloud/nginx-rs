@@ -1,7 +1,6 @@
-mod bindings;
 mod helpers;
 
 pub mod log;
+pub mod bindings;
 
-pub use bindings::*;
 pub use helpers::*;

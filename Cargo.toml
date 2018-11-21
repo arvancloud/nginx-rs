@@ -1,6 +1,6 @@
 [package]
 name = "nginx"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Navid <yaa110@gmail.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
@@ -18,4 +18,4 @@ crate-type = ["staticlib","rlib"]
 travis-ci = { repository = "arvancloud/nginx-rs" }
 
 [build-dependencies]
-bindgen = "0.31"
+bindgen = "0.30"
