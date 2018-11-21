@@ -1,0 +1,18 @@
+sudo: required
+
+language: generic
+
+services:
+  - docker
+
+rust:
+  - stable
+
+os:
+  - linux
+
+before_install:
+  - make build-image
+
+script:
+  - make build

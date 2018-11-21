@@ -14,3 +14,9 @@ prepare-nginx:
 	tar -C $(OUT_DIR)/nginx -xzf $(OUT_DIR)/nginx.tar.gz --strip-components 1
 	rm $(OUT_DIR)/nginx.tar.gz
 	cd $(OUT_DIR)/nginx && ./configure $(NGX_OPTS)
+
+build-image:
+	docker build build-utils -t nginx:builder
+
+build:
+	docker run -v ${PWD}:/nginx-rs --rm nginx:builder
