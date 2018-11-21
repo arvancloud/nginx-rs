@@ -1,8 +1,11 @@
 [package]
-name = "nginx-rs"
+name = "nginx"
 version = "0.1.0"
 authors = ["Navid <yaa110@gmail.com>"]
 license = "MIT/Apache-2.0"
 
+[lib]
+crate-type = ["staticlib","rlib"]
+
 [build-dependencies]
-bindgen = "0.43"
+bindgen = "0.31"
