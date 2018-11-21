@@ -3,9 +3,19 @@ name = "nginx"
 version = "0.1.0"
 authors = ["Navid <yaa110@gmail.com>"]
 license = "MIT/Apache-2.0"
+readme = "README.md"
+keywords = ["nginx"]
+repository = "https://github.com/arvancloud/nginx-rs"
+homepage = "https://github.com/arvancloud/nginx-rs"
+documentation = "https://docs.rs/nginx"
+description = "Rust bindings for Nginx"
+categories = ["api-bindings", "external-ffi-bindings"]
 
 [lib]
 crate-type = ["staticlib","rlib"]
+
+[badges]
+travis-ci = { repository = "arvancloud/nginx-rs" }
 
 [build-dependencies]
 bindgen = "0.31"
