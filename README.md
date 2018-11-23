@@ -26,3 +26,5 @@ It is recommended to use [Docker](https://docs.docker.com/) to build the crate:
 make build-image
 make build
 ```
+
+Some code were copied (and refactored) from [nginxinc/ngx-rust](https://github.com/nginxinc/ngx-rust).
