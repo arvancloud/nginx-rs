@@ -11,7 +11,7 @@ impl ngx_str_t {
     }
 
     pub fn to_string(&self) -> String {
-        unsafe { String::from_raw_parts(self.data, self.len, self.len) }
+        String::from(self.to_str())
     }
 }
 
