@@ -4,7 +4,7 @@ use std::env;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-const NGINX_VERSION: &'static str = "1.15.6";
+const NGINX_VERSION: &'static str = "1.15.8";
 
 fn run_make(rule: &str, cwd: &Path) -> Option<bool> {
     let output = Command::new("make")
