@@ -29,6 +29,10 @@ make build-image
 make build
 ```
 
-**Note:** The version of Nginx could be set using `NGINX_VERSION` environment variable, if it is not set, the default version of is used.
+**Note:** The version of Nginx could be set using `NGINX_VERSION` environment variable, if it is not set, the default version is used:
+
+```sh
+NGINX_VERSION=1.15.8 cargo build
+```
 
 Some code were copied (and refactored) from [nginxinc/ngx-rust](https://github.com/nginxinc/ngx-rust).
