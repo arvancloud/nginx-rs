@@ -10,7 +10,7 @@ fn run_make(rule: &str, cwd: &Path) -> Option<bool> {
     let output = Command::new("make")
         .arg(rule)
         .env("OUT_DIR", env::var("OUT_DIR").unwrap())
-        .env("NGINX_VERSION", NGINX_VERSION)
+        .env("NGINX_VERSION", env::var("NGINX_VERSION").unwrap_or(NGINX_VERSION.to_string()))
         .current_dir(cwd)
         .output()
         .ok()?;

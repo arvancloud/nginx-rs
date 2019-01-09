@@ -14,11 +14,13 @@ This crates provides [Nginx](https://nginx.org/) bindings for Rust. Currently, o
 nginx = "0.3"
 ```
 
-**Note:** In order to build the crate, `clang` must be installed and the following command must be executed on the host.
+**Note:** In order to build the crate, `clang` must be installed and the following command must be executed on the host:
 
 ```sh
 sed -i 's:# define IPPORT_RESERVED:// #define IPPORT_RESERVED:' /usr/include/netdb.h
 ```
+
+## Build
 
 It is recommended to use [Docker](https://docs.docker.com/) to build the crate:
 
@@ -26,5 +28,7 @@ It is recommended to use [Docker](https://docs.docker.com/) to build the crate:
 make build-image
 make build
 ```
+
+**Note:** The version of Nginx could be set using `NGINX_VERSION` environment variable, if it is not set, the default version of is used.
 
 Some code were copied (and refactored) from [nginxinc/ngx-rust](https://github.com/nginxinc/ngx-rust).
