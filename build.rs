@@ -18,6 +18,8 @@ fn run_make(rule: &str, cwd: &Path) -> Option<bool> {
 }
 
 fn main() {
+    println!("cargo:rerun-if-env-changed=NGINX_VERSION");
+
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
 
     let cwd = env::current_dir().unwrap();
