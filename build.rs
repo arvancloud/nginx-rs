@@ -10,7 +10,10 @@ fn run_make(rule: &str, cwd: &Path) -> Option<bool> {
     let output = Command::new("make")
         .arg(rule)
         .env("OUT_DIR", env::var("OUT_DIR").unwrap())
-        .env("NGINX_VERSION", env::var("NGINX_VERSION").unwrap_or(NGINX_VERSION.to_string()))
+        .env(
+            "NGINX_VERSION",
+            env::var("NGINX_VERSION").unwrap_or(NGINX_VERSION.to_string()),
+        )
         .current_dir(cwd)
         .output()
         .ok()?;
@@ -41,7 +44,8 @@ fn main() {
             format!("-I{}/objs", nginx_dir),
             format!("-I{}/src/http", nginx_dir),
             format!("-I{}/src/http/modules", nginx_dir),
-        ]).generate()
+        ])
+        .generate()
         .expect("Unable to generate bindings");
 
     bindings
