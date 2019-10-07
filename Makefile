@@ -1,5 +1,5 @@
 NGX_OPTS = \
-	--with-compat --with-threads --with-http_addition_module \
+	--with-compat --with-threads --with-http_addition_module --with-http_v2_module \
 	--with-http_auth_request_module --with-http_gunzip_module --with-http_gzip_static_module \
 	--with-http_random_index_module --with-http_realip_module --with-http_secure_link_module \
 	--with-http_slice_module --with-http_stub_status_module --with-http_sub_module \
@@ -14,6 +14,9 @@ prepare-nginx:
 	tar -C $(OUT_DIR)/nginx -xzf $(OUT_DIR)/nginx.tar.gz --strip-components 1
 	rm $(OUT_DIR)/nginx.tar.gz
 	cd $(OUT_DIR)/nginx && ./configure $(NGX_OPTS)
+
+prepare-nginx-local:
+	cd $(NGINX_PATH) && auto/configure $(NGX_OPTS)
 
 build-image:
 	docker build build-utils -t nginx:builder
