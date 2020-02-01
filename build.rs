@@ -5,7 +5,7 @@ use std::io::Result;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-const NGINX_VERSION: &'static str = "1.17.4";
+const NGINX_VERSION: &'static str = "1.17.8";
 
 fn run_make(rule: &str, cwd: &Path, local_nginx_path: &str) -> Result<bool> {
     let output = Command::new("make")
@@ -60,6 +60,7 @@ fn main() {
 
     let bindings = bindgen::Builder::default()
         .header("wrapper.h")
+        .opaque_type("timex")
         .layout_tests(false)
         .clang_args(vec![
             format!("-I{}/src/core", nginx_dir),
