@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd /nginx-rs
-cargo build
+RUSTFLAGS=-Awarnings cargo build -j`nproc`
