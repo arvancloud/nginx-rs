@@ -6,7 +6,7 @@ use std::str;
 
 impl ngx_str_t {
     pub fn to_str(&self) -> &str {
-        let bytes = unsafe { slice::from_raw_parts(self.data, self.len) };
+        let bytes = unsafe { slice::from_raw_parts(self.data, self.len as usize) };
         str::from_utf8(bytes).unwrap_or_default()
     }
 

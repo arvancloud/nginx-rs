@@ -60,7 +60,6 @@ fn main() {
 
     let bindings = bindgen::Builder::default()
         .header("wrapper.h")
-        .opaque_type("timex")
         .layout_tests(false)
         .clang_args(vec![
             format!("-I{}/src/core", nginx_dir),
