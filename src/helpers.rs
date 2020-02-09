@@ -1,4 +1,4 @@
-use bindings::{
+use crate::bindings::{
     ngx_http_headers_in_t, ngx_list_part_t, ngx_list_t, ngx_str_t, ngx_table_elt_t, ngx_uint_t,
 };
 use std::slice;
@@ -64,8 +64,8 @@ impl Iterator for NgxListIterator {
                 self.i = 0;
             }
             let header = unsafe { self.h.offset(self.i as isize) };
-            let header_name = unsafe { (*header).key };
-            let header_value = unsafe { (*header).value };
+            let header_name = unsafe { &(*header).key };
+            let header_value = unsafe { &(*header).value };
             self.i += 1;
             Some((header_name.to_string(), header_value.to_string()))
         }

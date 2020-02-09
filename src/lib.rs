@@ -1,3 +1,6 @@
+extern crate libc;
+
+
 mod bindings;
 mod helpers;
 

@@ -10,12 +10,16 @@ homepage = "https://github.com/arvancloud/nginx-rs"
 documentation = "https://docs.rs/nginx"
 description = "Rust bindings for NGINX API"
 categories = ["api-bindings", "external-ffi-bindings"]
+edition = "2018"
 
 [lib]
 crate-type = ["staticlib", "rlib"]
 
 [badges]
 travis-ci = { repository = "arvancloud/nginx-rs" }
+
+[dependencies]
+libc = "0.2"
 
 [build-dependencies]
 bindgen = "0.53"

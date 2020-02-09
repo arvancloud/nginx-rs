@@ -5,6 +5,7 @@ use std::io::Result;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+
 const NGINX_VERSION: &'static str = "1.17.8";
 
 fn run_make(rule: &str, cwd: &Path, local_nginx_path: &str) -> Result<bool> {
@@ -50,7 +51,7 @@ fn main() {
         }
     })
     .expect("unable to prepare nginx");
-
+    
     let nginx_dir_path = out_path.join("nginx");
     let nginx_dir = if local_nginx_path.is_empty() {
         nginx_dir_path.to_str().unwrap()
@@ -59,9 +60,21 @@ fn main() {
     };
 
     let bindings = bindgen::Builder::default()
+        .ctypes_prefix("libc")
+        .prepend_enum_name(false)
+        .impl_debug(true)
+        .derive_copy(true)
+        .derive_debug(true)
+        .whitelist_type("ngx_.*")
+        .whitelist_function("ngx_.*")
+        .whitelist_var("ngx_.*")
+        .whitelist_type("NGX_.*")
+        .whitelist_function("NGX_.*")
+        .whitelist_var("NGX_.*")
+        .whitelist_recursively(false)
         .header("wrapper.h")
         .layout_tests(false)
-        .clang_args(vec![
+        .clang_args(&[
             format!("-I{}/src/core", nginx_dir),
             format!("-I{}/src/event", nginx_dir),
             format!("-I{}/src/event/modules", nginx_dir),
