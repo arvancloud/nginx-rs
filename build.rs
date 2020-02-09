@@ -61,6 +61,7 @@ fn main() {
     let bindings = bindgen::Builder::default()
         .header("wrapper.h")
         .layout_tests(false)
+        .blacklist_item("IPPORT_RESERVED")
         .clang_args(vec![
             format!("-I{}/src/core", nginx_dir),
             format!("-I{}/src/event", nginx_dir),
