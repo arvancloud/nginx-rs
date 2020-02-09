@@ -41,4 +41,25 @@ pub struct __va_list_tag {
     pub reg_save_area: *mut libc::c_void,
 }
 
+#[cfg(target_os = "Linux")]
+pub type __kernel_rwf_t = libc::c_int;
+
+#[cfg(target_os = "Linux")]
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct iocb {
+    pub aio_data: u64,
+    pub aio_key: u32,
+    pub aio_rw_flags: __kernel_rwf_t,
+    pub aio_lio_opcode: u16,
+    pub aio_reqprio: i16,
+    pub aio_fildes: u32,
+    pub aio_buf: u64,
+    pub aio_nbytes: u64,
+    pub aio_offset: i64,
+    pub aio_reserved2: u64,
+    pub aio_flags: u32,
+    pub aio_resfd: u32,
+}
+
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
