@@ -1,13 +1,13 @@
 [package]
 name = "nginx"
-version = "0.7.0"
+version = "0.7.1"
 authors = ["Navid <yaa110@gmail.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
 keywords = ["nginx"]
 repository = "https://github.com/arvancloud/nginx-rs"
 homepage = "https://github.com/arvancloud/nginx-rs"
-documentation = "https://docs.rs/nginx"
+documentation = "https://arvancloud.github.io/nginx-rs"
 description = "Rust bindings for NGINX API"
 categories = ["api-bindings", "external-ffi-bindings"]
 

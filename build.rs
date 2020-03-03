@@ -5,7 +5,7 @@ use std::io::Result;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-const NGINX_VERSION: &'static str = "1.17.8";
+const NGINX_VERSION: &'static str = "1.17.9";
 
 fn run_make(rule: &str, cwd: &Path, local_nginx_path: &str) -> Result<bool> {
     let output = Command::new("make")

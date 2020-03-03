@@ -1,6 +1,6 @@
 # nginx-rs
 
-[![crates.io](https://img.shields.io/crates/v/nginx.svg)](https://crates.io/crates/nginx) [![Documentation](https://img.shields.io/badge/Docs-nginx-blue.svg)](https://docs.rs/nginx) [![Build Status](https://travis-ci.org/arvancloud/nginx-rs.svg?branch=master)](https://travis-ci.org/arvancloud/nginx-rs) ![Crates.io](https://img.shields.io/crates/l/rustc-serialize.svg) ![Nginx](https://img.shields.io/badge/Nginx-1.17.8-orange.svg)
+[![crates.io](https://img.shields.io/crates/v/nginx.svg)](https://crates.io/crates/nginx) [![Documentation](https://img.shields.io/badge/Docs-nginx-blue.svg)](https://arvancloud.github.io/nginx-rs) [![Build Status](https://travis-ci.org/arvancloud/nginx-rs.svg?branch=master)](https://travis-ci.org/arvancloud/nginx-rs) ![Crates.io](https://img.shields.io/crates/l/rustc-serialize.svg) ![Nginx](https://img.shields.io/badge/Nginx-1.17.9-orange.svg)
 
 This crate provides [nginx](https://nginx.org/) bindings for Rust. Currently, only Linux is supported.
 
@@ -14,15 +14,6 @@ nginx = "0.7"
 ```
 
 **Note:** In order to build the crate, `clang` must be installed.
-
-## Build
-
-Docker could be used to to build the crate:
-
-```sh
-make build-image
-make build
-```
 
 ## Environment Variables
 

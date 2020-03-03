@@ -1,9 +1,6 @@
 sudo: required
 
-language: generic
-
-services:
-  - docker
+language: rust
 
 rust:
   - stable
@@ -12,7 +9,8 @@ os:
   - linux
 
 before_install:
-  - make build-image
+  - sudo apt-get update
+  - sudo apt-get install -y -qq clang
 
 script:
-  - make build
+  - RUSTFLAGS=-Awarnings cargo build -j`nproc`

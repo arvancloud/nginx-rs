@@ -18,8 +18,11 @@ prepare-nginx:
 prepare-nginx-local:
 	cd $(NGINX_PATH) && auto/configure $(NGX_OPTS)
 
-build-image:
-	docker build build-utils -t nginx:builder
+doc:
+	rm -rf target/doc
+	RUSTFLAGS=-Awarnings cargo doc --no-deps --quiet -j`nproc`
+	echo "<meta http-equiv=refresh content=0;url=nginx/index.html>" > target/doc/index.html
 
-build:
-	docker run -v ${PWD}:/nginx-rs --rm nginx:builder
+publish-doc: doc
+	ghp-import -n target/doc
+	git push -fq https://${GITHUB_TOKEN}@github.com/arvancloud/nginx-rs.git gh-pages
