@@ -1,6 +1,6 @@
 [package]
 name = "nginx"
-version = "0.8.0"
+version = "0.9.4"
 authors = ["Navid <yaa110@gmail.com>"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
