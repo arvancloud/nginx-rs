@@ -1,6 +1,6 @@
 # nginx-rs
 
-[![crates.io](https://img.shields.io/crates/v/nginx.svg)](https://crates.io/crates/nginx) [![Documentation](https://img.shields.io/badge/Docs-nginx-blue.svg)](https://arvancloud.github.io/nginx-rs) [![Build Status](https://travis-ci.org/arvancloud/nginx-rs.svg?branch=master)](https://travis-ci.org/arvancloud/nginx-rs) ![Crates.io](https://img.shields.io/crates/l/rustc-serialize.svg) ![Nginx](https://img.shields.io/badge/nginx-1.19.1-orange.svg)
+[![crates.io](https://img.shields.io/crates/v/nginx.svg)](https://crates.io/crates/nginx) [![Documentation](https://img.shields.io/badge/Docs-nginx-blue.svg)](https://arvancloud.github.io/nginx-rs) [![Build Status](https://travis-ci.org/arvancloud/nginx-rs.svg?branch=master)](https://travis-ci.org/arvancloud/nginx-rs) ![Crates.io](https://img.shields.io/crates/l/rustc-serialize.svg) ![Nginx](https://img.shields.io/badge/nginx-1.19.3-orange.svg)
 
 This crate provides [nginx](https://nginx.org/) bindings for Rust. Currently, only Linux is supported.
 
@@ -10,7 +10,7 @@ This crate provides [nginx](https://nginx.org/) bindings for Rust. Currently, on
 
 ```toml
 [dependencies]
-nginx = "0.9"
+nginx = "0.10"
 ```
 
 **Note:** In order to build the crate, `clang` must be installed.
