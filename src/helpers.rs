@@ -1,6 +1,6 @@
 use bindings::{
-    ngx_http_headers_in_t, ngx_list_part_t, ngx_list_push, ngx_list_t, ngx_palloc, ngx_pool_t,
-    ngx_str_t, ngx_table_elt_t, u_char,
+    ngx_array_t, ngx_http_headers_in_t, ngx_list_part_t, ngx_list_push, ngx_list_t, ngx_palloc,
+    ngx_pool_t, ngx_str_t, ngx_table_elt_t, u_char,
 };
 use std::convert::{From, TryFrom};
 use std::ffi::OsStr;
@@ -49,12 +49,37 @@ impl TryFrom<ngx_str_t> for String {
     }
 }
 
+impl ngx_table_elt_t {
+    pub fn to_string(&self) -> String {
+        self.value.to_string()
+    }
+}
+
+impl ngx_array_t {
+    pub fn table_elt_to_string_vec(&self) -> Vec<String> {
+        let mut ret = Vec::new();
+        let t = self.elts as *mut *mut ngx_table_elt_t;
+        if t.is_null() {
+            return ret;
+        }
+        let mut t = unsafe { *t };
+        for _ in 0..self.nelts {
+            if !t.is_null() {
+                ret.push(unsafe { *t }.value.to_string());
+            }
+            t = unsafe { t.add(1) };
+        }
+        ret
+    }
+}
+
 impl ngx_http_headers_in_t {
     pub fn host_str(&self) -> String {
-        if self.host.is_null() {
-            return Default::default();
+        if let Some(host) = unsafe { self.host.as_ref() } {
+            host.to_string()
+        } else {
+            Default::default()
         }
-        unsafe { *self.host }.value.to_string()
     }
 
     pub fn add(&mut self, pool: *mut ngx_pool_t, key: &str, value: &str) -> Option<()> {
