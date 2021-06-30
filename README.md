@@ -10,7 +10,7 @@ This crate provides [nginx](https://nginx.org/) bindings for Rust. Currently, on
 
 ```toml
 [dependencies]
-nginx = "0.12"
+nginx = "0.13"
 ```
 
 **Note:** In order to build the crate, `clang` must be installed.
