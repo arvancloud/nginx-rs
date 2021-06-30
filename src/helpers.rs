@@ -1,6 +1,6 @@
 use bindings::{
-    ngx_array_t, ngx_http_headers_in_t, ngx_list_part_t, ngx_list_push, ngx_list_t, ngx_palloc,
-    ngx_pool_t, ngx_str_t, ngx_table_elt_t, u_char,
+    ngx_array_t, ngx_http_headers_in_t, ngx_http_headers_out_t, ngx_list_part_t, ngx_list_push,
+    ngx_list_t, ngx_palloc, ngx_pool_t, ngx_str_t, ngx_table_elt_t, u_char,
 };
 use std::convert::{From, TryFrom};
 use std::ffi::OsStr;
@@ -84,15 +84,34 @@ impl ngx_http_headers_in_t {
 
     pub fn add(&mut self, pool: *mut ngx_pool_t, key: &str, value: &str) -> Option<()> {
         let table: *mut ngx_table_elt_t = unsafe { ngx_list_push(&mut self.headers) as _ };
-        unsafe { table.as_mut() }.map(|table| {
-            table.hash = 1;
-            table.key.len = key.len() as _;
-            table.key.data = str_to_uchar(pool, key);
-            table.value.len = value.len() as _;
-            table.value.data = str_to_uchar(pool, value);
-            table.lowcase_key = str_to_uchar(pool, String::from(key).to_ascii_lowercase().as_str());
-        })
+        add_to_ngx_table(table, pool, key, value)
     }
+}
+
+impl ngx_http_headers_out_t {
+    pub fn add(&mut self, pool: *mut ngx_pool_t, key: &str, value: &str) -> Option<()> {
+        let table: *mut ngx_table_elt_t = unsafe { ngx_list_push(&mut self.headers) as _ };
+        add_to_ngx_table(table, pool, key, value)
+    }
+}
+
+fn add_to_ngx_table(
+    table: *mut ngx_table_elt_t,
+    pool: *mut ngx_pool_t,
+    key: &str,
+    value: &str,
+) -> Option<()> {
+    if table.is_null() {
+        return None;
+    }
+    unsafe { table.as_mut() }.map(|table| {
+        table.hash = 1;
+        table.key.len = key.len() as _;
+        table.key.data = str_to_uchar(pool, key);
+        table.value.len = value.len() as _;
+        table.value.data = str_to_uchar(pool, value);
+        table.lowcase_key = str_to_uchar(pool, String::from(key).to_ascii_lowercase().as_str());
+    })
 }
 
 impl IntoIterator for ngx_http_headers_in_t {
