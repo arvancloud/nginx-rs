@@ -49,6 +49,15 @@ impl TryFrom<ngx_str_t> for String {
     }
 }
 
+impl ngx_str_t {
+    pub fn from_string(pool: *mut ngx_pool_t, data: String) -> Self {
+        ngx_str_t {
+            data: str_to_uchar(pool, data.as_str()),
+            len: data.len() as _,
+        }
+    }
+}
+
 impl ngx_table_elt_t {
     pub fn to_string(&self) -> String {
         self.value.to_string()
