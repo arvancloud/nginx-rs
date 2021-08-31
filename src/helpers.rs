@@ -1,6 +1,7 @@
 use bindings::{
-    ngx_array_t, ngx_http_headers_in_t, ngx_http_headers_out_t, ngx_list_part_t, ngx_list_push,
-    ngx_list_t, ngx_palloc, ngx_pool_t, ngx_str_t, ngx_table_elt_t, u_char,
+    ngx_array_t, ngx_buf_t, ngx_chain_t, ngx_http_headers_in_t, ngx_http_headers_out_t,
+    ngx_list_part_t, ngx_list_push, ngx_list_t, ngx_palloc, ngx_pool_t, ngx_str_t, ngx_table_elt_t,
+    u_char,
 };
 use std::convert::{From, TryFrom};
 use std::ffi::OsStr;
@@ -132,6 +133,15 @@ impl IntoIterator for ngx_http_headers_in_t {
     }
 }
 
+impl IntoIterator for ngx_http_headers_out_t {
+    type Item = Header;
+    type IntoIter = ListIterator;
+
+    fn into_iter(self) -> Self::IntoIter {
+        ListIterator::from_ngx_list(self.headers)
+    }
+}
+
 pub struct ListIterator {
     part: ngx_list_part_t,
     h: *mut ngx_table_elt_t,
@@ -194,4 +204,153 @@ fn str_to_uchar(pool: *mut ngx_pool_t, data: &str) -> *mut u_char {
         copy_nonoverlapping(data.as_ptr(), ptr, data.len());
     }
     ptr
+}
+
+impl From<ngx_buf_t> for &[u8] {
+    fn from(buf: ngx_buf_t) -> Self {
+        if buf.pos.is_null() || buf.last.is_null() || buf.pos == buf.last {
+            return Default::default();
+        }
+        unsafe { slice::from_raw_parts(buf.pos, buf.last.offset_from(buf.pos) as usize) }
+    }
+}
+
+impl fmt::Display for ngx_buf_t {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "buffer: start.end {:p}/{:p}, pos.last {:p}/{:p}, len {}, file pos {}/{}, tag {:p}, \
+             last_in_chain {}, last_buf {}, temporary {}, memory {}, recycled {}, flush {}, sync {} \
+             last_shadow {}, temp file {}, content:\n{}",
+            self.start,
+            self.end,
+            self.pos,
+            self.last,
+            self.size(),
+            self.file_pos,
+            self.file_last,
+            self.tag,
+            self.last_in_chain(),
+            self.last_buf(),
+            self.temporary(),
+            self.memory(),
+            self.recycled(),
+            self.flush(),
+            self.sync(),
+            self.last_shadow(),
+            self.temp_file(),
+            String::from_utf8_lossy((*self).into())
+        )
+    }
+}
+
+impl ngx_buf_t {
+    pub fn to_str(&self) -> &str {
+        unsafe {
+            let slice = slice::from_raw_parts(self.pos, self.size());
+            return str::from_utf8(slice).unwrap();
+        }
+    }
+
+    pub fn to_string(&self) -> String {
+        return String::from(self.to_str());
+    }
+
+    pub fn size(&self) -> usize {
+        unsafe { self.last.offset_from(self.pos) as usize }
+    }
+
+    pub fn size_from_offset(&self, offset: usize) -> usize {
+        let total = self.size();
+        if total > offset {
+            total - offset
+        } else {
+            0
+        }
+    }
+
+    pub fn buf_from_offset(&self, offset: usize) -> &[u8] {
+        let available = self.size_from_offset(offset);
+        if available == 0 {
+            &[]
+        } else {
+            unsafe { slice::from_raw_parts(self.pos, available) }
+        }
+    }
+}
+
+impl fmt::Display for ngx_chain_t {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let buf = self.buf;
+        unsafe {
+            if let Some(val) = buf.as_ref() {
+                write!(f, "{}\n", val);
+            }
+        }
+
+        let mut cur = self.next;
+        while !cur.is_null() {
+            unsafe {
+                if let Some(val) = (*cur).buf.as_ref() {
+                    write!(f, "{}\n", val);
+                }
+                cur = (*cur).next;
+            }
+        }
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::ptr::null;
+
+    use crate::bindings;
+
+    use super::*;
+    use std::cell::UnsafeCell;
+    use std::os::raw::c_void;
+
+    fn create_buf(content: &mut Vec<u8>, size: usize) -> ngx_buf_t {
+        unsafe {
+            let buf = ngx_buf_t {
+                pos: content.as_mut_ptr(),
+                last: content.as_mut_ptr().add(size),
+                start: content.as_mut_ptr(),
+                end: content.as_mut_ptr().add(size),
+                file_pos: 0,
+                file_last: 0,
+                tag: std::ptr::null_mut(),
+                file: std::ptr::null_mut(),
+                shadow: std::ptr::null_mut(),
+                _bitfield_1: ngx_buf_t::new_bitfield_1(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+                num: 1,
+            };
+            buf
+        }
+    }
+    #[test]
+    fn test_display_buf() {
+        let mut str_1 = "it.is.a.dump.string".as_bytes().to_vec();
+        let mut buf_1 = Box::new(create_buf(&mut str_1, 10));
+        assert_eq!(10, buf_1.size());
+        assert_eq!(6, buf_1.size_from_offset(4));
+        let mut str_2 = "it.is.another.string".as_bytes().to_vec();
+        let mut buf_2 = Box::new(create_buf(&mut str_2, 20));
+
+        let chain_2 = ngx_chain_t {
+            buf: buf_2.as_mut(),
+            next: std::ptr::null_mut(),
+        };
+        let mut chain_2 = Box::new(chain_2);
+        let chain = ngx_chain_t {
+            buf: buf_1.as_mut(),
+            next: chain_2.as_mut(),
+        };
+
+        println!("buf_1: {}", buf_1);
+        println!("buf_2: {}", buf_2);
+        println!("chain 1: \n{}", chain);
+        println!("chain 2: \n{}", chain);
+    }
 }
