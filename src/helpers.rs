@@ -256,25 +256,17 @@ impl ngx_buf_t {
         return String::from(self.to_str());
     }
 
+    // keep consistent with ngx_buf_in_memory
+    pub fn in_memory(&self) -> bool {
+        return self.temporary() == 1 || self.memory() == 1 || self.mmap() == 1;
+    }
+
+    // keep consistent with ngx_buf_size
     pub fn size(&self) -> usize {
-        unsafe { self.last.offset_from(self.pos) as usize }
-    }
-
-    pub fn size_from_offset(&self, offset: usize) -> usize {
-        let total = self.size();
-        if total > offset {
-            total - offset
+        if self.in_memory() {
+            unsafe { self.last.offset_from(self.pos) as usize }
         } else {
-            0
-        }
-    }
-
-    pub fn buf_from_offset(&self, offset: usize) -> &[u8] {
-        let available = self.size_from_offset(offset);
-        if available == 0 {
-            &[]
-        } else {
-            unsafe { slice::from_raw_parts(self.pos, available) }
+            (self.file_last - self.file_pos) as usize
         }
     }
 }
@@ -303,14 +295,7 @@ impl fmt::Display for ngx_chain_t {
 
 #[cfg(test)]
 mod tests {
-    use std::ptr::null;
-
-    use crate::bindings;
-
     use super::*;
-    use std::cell::UnsafeCell;
-    use std::os::raw::c_void;
-
     fn create_buf(content: &mut Vec<u8>, size: usize) -> ngx_buf_t {
         unsafe {
             let buf = ngx_buf_t {
@@ -323,7 +308,7 @@ mod tests {
                 tag: std::ptr::null_mut(),
                 file: std::ptr::null_mut(),
                 shadow: std::ptr::null_mut(),
-                _bitfield_1: ngx_buf_t::new_bitfield_1(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+                _bitfield_1: ngx_buf_t::new_bitfield_1(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
                 num: 1,
             };
             buf
@@ -334,7 +319,7 @@ mod tests {
         let mut str_1 = "it.is.a.dump.string".as_bytes().to_vec();
         let mut buf_1 = Box::new(create_buf(&mut str_1, 10));
         assert_eq!(10, buf_1.size());
-        assert_eq!(6, buf_1.size_from_offset(4));
+        // assert_eq!(6, buf_1.size_from_offset(4));
         let mut str_2 = "it.is.another.string".as_bytes().to_vec();
         let mut buf_2 = Box::new(create_buf(&mut str_2, 20));
 
