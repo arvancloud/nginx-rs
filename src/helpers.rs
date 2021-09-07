@@ -246,9 +246,10 @@ impl fmt::Display for ngx_buf_t {
 
 impl ngx_buf_t {
     pub fn to_str(&self) -> &str {
-        unsafe {
-            let slice = slice::from_raw_parts(self.pos, self.size());
-            return str::from_utf8(slice).unwrap();
+        let slice = unsafe { slice::from_raw_parts(self.pos, self.size()) };
+        match str::from_utf8(slice) {
+            Ok(data) => data,
+            Err(_) => "",
         }
     }
 
