@@ -10,7 +10,7 @@ This crate provides [nginx](https://nginx.org/) bindings for Rust. Currently, on
 
 ```toml
 [dependencies]
-nginx = { git = "https://github.com/arvancloud/nginx-rs.git", tag = "0.14.0" }
+nginx = { git = "https://github.com/arvancloud/nginx-rs.git", tag = "0.15.0" }
 ```
 
 **Note:** In order to build the crate, `clang` must be installed.
