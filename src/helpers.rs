@@ -84,11 +84,7 @@ impl ngx_array_t {
 
 impl ngx_http_headers_in_t {
     pub fn host_str(&self) -> String {
-        if let Some(host) = unsafe { self.host.as_ref() } {
-            host.to_string()
-        } else {
-            Default::default()
-        }
+        self.server.to_string()
     }
 
     pub fn add(&mut self, pool: *mut ngx_pool_t, key: &str, value: &str) -> Option<()> {
